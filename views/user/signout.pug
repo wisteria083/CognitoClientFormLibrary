@@ -1,0 +1,73 @@
+extend ../layout
+
+block content
+  div.content.container
+    div.row
+      div.text-center.col.align-self-center
+        div.card.jumbotron(style="max-width:400px;")
+          h4 
+            | ログアウト
+          form.simple-form
+              
+            div#error-message.alert.alert-warning(style="display:none")
+            
+            div.form-group
+              button#signout-button.btn.btn-success(type="submit")
+                | Continue&rarr;
+
+  script(type="text/javascript").
+  
+    // -----------------------------
+    // init cognito client
+    // -----------------------------
+    var cognitoClient = new CognitoClient();
+    var redirecter = new CognitoClientRedirecter($("#error-message"));
+    
+    redirecter.urlParamExceptionRender();// urlパラメータにexception,exception_messageがあれは描画
+    
+    $.LoadingOverlay("show");
+    
+    cognitoClient.init()
+    .then(function(result){
+    
+      $.LoadingOverlay("hide");
+    
+      // -----------------------------    
+      // is already signed in
+      // -----------------------------
+      cognitoClient.isSignedIn()
+      .then(function(result){
+        if(result === false){
+          window.location.href = "/signin";
+        }
+      });
+        
+      // -----------------------------
+      // sign in
+      // -----------------------------
+      $("form").submit(function(e) {
+      
+        $.LoadingOverlay("show");
+        
+        cognitoClient.signout()
+        .then(function(result){
+        
+          $.LoadingOverlay("hide");
+          redirecter.redirect(redirecter.config.SignOut,null);
+          return false;
+          
+        },function(err){
+        
+          $.LoadingOverlay("hide");
+          redirecter.redirect(redirecter.config.SignOut,err);
+          return false;
+          
+        });
+        
+        return false;
+        
+      });
+      
+    });
+                  
+    

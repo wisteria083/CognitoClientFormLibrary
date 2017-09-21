@@ -1,0 +1,41 @@
+.content{
+    /*margin-top:56px;*/
+    margin-top:86px;
+}
+
+.card{
+    background-color: #fff;
+    border-radius: .25rem;
+    box-shadow: 0 1px 0 rgba(0,0,0,.25);
+    padding: 2rem 2rem 1rem;
+    margin: 0 auto 2rem;
+    position: relative;
+    border: 1px solid #E8E8E8;
+}
+
+.simple-form{
+    
+}
+
+.simple-form input{
+    font-size:20px;
+    /*width :100%;*/
+    padding:0.5em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.simple-form button{
+    font-size:20px;
+    width :100%;
+    padding:0.5em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.befound{
+    font-size:0.8em;
+    text-align:left;
+    color:#999;
+    padding:0.5em;
+}

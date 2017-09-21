@@ -1,0 +1,149 @@
+extend ../layout
+
+block content
+  div.content.container
+    div.row
+      div.text-center.col.align-self-center
+        div.card.jumbotron(style="max-width:400px;")
+            h4 
+                |プロフィール
+            form#profile.simple-form
+            
+                div.form-group
+                    label(for="email")
+                        |ユーザ名(メールアドレス)
+                    input.form-control(id="email" name="email" type="email" readonly style="display:block")
+                    
+                div.form-group
+                    label(for="nickname")
+                        |ニックネーム
+                    input.form-control(id="nickname" name="nickname" type="text" style="display:block")
+                    
+                div.form-group
+                    div.form-check.form-check-inline
+                      label.form-check-label
+                        input.form-check-input(type="radio" name="gender" value="0" style="display:block")
+                        |未指定
+                        
+                    div.form-check.form-check-inline
+                      label.form-check-label
+                        input.form-check-input(type="radio" name="gender" value="1" style="display:block")
+                        |男性
+                        
+                    div.form-check.form-check-inline
+                      label.form-check-label
+                        input.form-check-input(type="radio" name="gender" value="2" style="display:block")
+                        |女性
+                    
+                div#error-message.alert.alert-warning(style="display:none")
+            
+                div.form-group
+                    button.btn.btn-success(type="submit" disabled="disabled")
+                        | 更新 →
+                
+  script(type="text/javascript").
+  
+    // -----------------------------
+    // form
+    // -----------------------------
+    var $form = $("form.simple-form");
+  
+    // -----------------------------
+    // validation
+    // -----------------------------
+    var customValidator = new CustomValidator($form);
+    
+    $form.on("input", function(e) {
+        // switch submit button disabled
+        $form.find(':submit').attr('disabled', !(customValidator.isInputAll() && customValidator.valid()));
+    });
+
+    // -----------------------------
+    // redirecter
+    // -----------------------------
+    var redirecter = new CognitoClientRedirecter($("#error-message"));
+    redirecter.urlParamExceptionRender();// urlパラメータにexception,exception_messageがあれは描画
+
+    // -----------------------------
+    // cognito client
+    // -----------------------------
+    var cognitoClient = new CognitoClient();
+    
+    $.LoadingOverlay("show");
+    
+    // init cognito client
+    cognitoClient.init() 
+    .then(function(result){
+        
+        // -----------------------------    
+        // is already signed in
+        // -----------------------------
+        cognitoClient.isSignedIn()
+        .then(function(result){
+            if(result === false){
+              window.location.href = "/signin";
+            }
+        });
+    
+        // -----------------------------
+        // load user attrbutes
+        // -----------------------------
+        cognitoClient.getUserAttributes()
+        .then(function(attributes){
+        
+            $.LoadingOverlay("hide");
+        
+            $.each(attributes, function(key, value) {
+                $('[name=' + key + ']').val(value);
+            });
+            
+        },function(err){
+            
+            $.LoadingOverlay("hide");
+            
+        });
+        
+        // -----------------------------
+        // update user attributes 
+        // -----------------------------
+        $form.submit(function(e) {
+        
+            $.LoadingOverlay("show");
+            
+            var serializeArray = $('form#profile').serializeArray();
+            var attributes = [];
+            
+            for(var key in serializeArray){
+                
+                var name = serializeArray[key]["name"]; 
+                var value = serializeArray[key]["value"];
+                
+                // 変更を許可された属性のみ
+                if(name == "nickname"){
+                    attributes.push({
+                        Name : name,
+                        Value : value
+                    });
+                }
+                
+            }
+            
+            cognitoClient.updateUserAttributes(attributes)
+            .then(function(result){
+            
+              $.LoadingOverlay("hide");
+              redirecter.redirect(redirecter.config.UpdateProfile,null);
+              
+            },function(err){
+            
+              $.LoadingOverlay("hide");
+              redirecter.redirect(redirecter.config.UpdateProfile,err);
+              
+            });
+            
+        });
+        
+    });
+     
+                  
+    

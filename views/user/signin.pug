@@ -1,0 +1,100 @@
+extend ../layout
+
+block content
+  div.content.container
+    div.row
+      div.text-center.col.align-self-center
+        div.card.jumbotron(style="max-width:400px;")
+          h4 
+            | ログイン
+          form.simple-form
+            div.form-group
+              label(for="username")
+              input.form-control(id="username" name="username" type="text" placeholder="メールアドレス" style="display:block;")
+              
+            div.form-group
+              label(for="password")
+              input.form-control(id="password" name="password" type="password" placeholder="パスワード" style="display:block;")
+              
+            div#error-message.alert.alert-warning(style="display:none")
+            
+            div.form-group
+              button#signin-button.btn.btn-success(type="submit" disabled="disabled")
+                | Continue →
+          p
+            a(href="/signup")
+              |新規登録
+          p
+            a(href="/forget-password")
+              |パスワードをお忘れですか？
+
+  script(type="text/javascript").
+
+    // -----------------------------
+    // form
+    // -----------------------------
+    var $form = $("form.simple-form");
+  
+    // -----------------------------
+    // validation
+    // -----------------------------
+    var customValidator = new CustomValidator($form);
+    
+    $form.on("input", function(e) {
+        // switch submit button disabled
+        $form.find(':submit').attr('disabled', !(customValidator.isInputAll() && customValidator.valid()));
+    });
+
+    // -----------------------------
+    // redirecter
+    // -----------------------------
+    var redirecter = new CognitoClientRedirecter($("#error-message"));
+    redirecter.urlParamExceptionRender();// urlパラメータにexception,exception_messageがあれは描画
+
+    // -----------------------------
+    // cognito client
+    // -----------------------------
+    var cognitoClient = new CognitoClient();
+    
+    $.LoadingOverlay("show");
+    
+    // init cognito client
+    cognitoClient.init() 
+    .then(function(result){
+    
+      $.LoadingOverlay("hide");
+    
+      // -----------------------------
+      // form submit
+      // -----------------------------
+      $form.submit(function(e) {
+      
+        $.LoadingOverlay("show");
+        
+        var username = $("input#username").val();
+        var password = $("input#password").val();
+        
+        // -----------------------------
+        // signin
+        // -----------------------------
+        cognitoClient.signin(username,password)
+        .then(function(result){
+        
+          $.LoadingOverlay("hide");
+          redirecter.redirect(redirecter.config.SignIn,null);
+          
+        },function(err){
+        
+          $.LoadingOverlay("hide");
+          redirecter.redirect(redirecter.config.SignIn,err);
+          
+        });
+        
+        return false;
+        
+      });
+      
+    });
+      
+    
+  

@@ -1,0 +1,98 @@
+extend ../layout
+
+block content
+  div.content.container
+    div.row
+      div.text-center.col.align-self-center
+        div.card.jumbotron.text-center(style="max-width:400px;")
+          h4 
+            | ユーザーの削除
+          form.simple-form.text-left
+
+            div.form-group
+              label(for="confirmDelete")
+              input.form-control(id="confirmDelete" name="confirmDelete" type="password" placeholder="deleteと入力してください" style="display:block;")
+                
+            div#error-message.alert.alert-warning(style="display:none")
+            
+            div.form-group
+              button.btn.btn-primary(type="submit" disabled="disabled")
+                | Continue&rarr;
+                
+  script(type="text/javascript").
+  
+    // -----------------------------
+    // form
+    // -----------------------------
+    var $form = $("form.simple-form");
+  
+    // -----------------------------
+    // validation
+    // -----------------------------
+    var customValidator = new CustomValidator($form);
+    
+    $form.on("input", function(e) {
+        // switch submit button disabled
+        $form.find(':submit').attr('disabled', !(customValidator.isInputAll() && customValidator.valid()));
+    });
+
+    // -----------------------------
+    // redirecter
+    // -----------------------------
+    var redirecter = new CognitoClientRedirecter($("#error-message"));
+    redirecter.urlParamExceptionRender();// urlパラメータにexception,exception_messageがあれは描画
+
+    // -----------------------------
+    // cognito client
+    // -----------------------------
+    var cognitoClient = new CognitoClient();
+    
+    $.LoadingOverlay("show");
+    
+    // init cognito client
+    cognitoClient.init() 
+    .then(function(result){
+    
+      $.LoadingOverlay("hide");
+    
+      // -----------------------------    
+      // is already signed in
+      // -----------------------------
+      cognitoClient.isSignedIn()
+      .then(function(result){
+        if(result === false){
+          window.location.href = "/signin";
+        }
+      });
+      
+      // -----------------------------
+      // form submit
+      // -----------------------------
+      $form.submit(function(e) {
+      
+        $.LoadingOverlay("show");
+        
+        // -----------------------------
+        // deleteUser
+        // -----------------------------
+        cognitoClient.deleteUser()
+        .then(function(result){
+        
+          $.LoadingOverlay("hide");
+          redirecter.redirect(redirecter.config.DeleteUser,null);
+          
+        },function(err){
+        
+          $.LoadingOverlay("hide");
+          redirecter.redirect(redirecter.config.DeleteUser,err);
+          
+        });
+        
+        return false;
+        
+      });
+    
+    });
+     
+    
+    
