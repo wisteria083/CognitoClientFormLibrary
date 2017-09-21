@@ -1,8 +1,8 @@
 # CognitoClientFormLibrary
-
-Cognito Client SDK(amazon-cognito-identity-js)を容易に具体的に実装するサンプルライブラリです
-node.js Express&pug を使っていますがjavascriptはすべてクライントサイドで動作します。
-
+  
+Cognito Client SDK(amazon-cognito-identity-js)を容易に具体的に実装するサンプルライブラリです  
+node.js Express&pug を使っていますがjavascriptはすべてクライントサイドで動作します。  
+  
 ## Setup
 
 ### import libraries
