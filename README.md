@@ -48,8 +48,8 @@ views/user/signup-confirm.pug
 views/user/signup-complete.pug  
 等を参照  
   
-単体ではセッション管理や、ユーザ情報を保有しません。  
-コンストラクタにAccessTokenをCookieに浸透させるためのリロードのコードが含まれています。  
+単体ではセッション管理や、ユーザ情報を保有しません。  
+イニシャライザにAccessTokenをCookieに浸透させるためのリロードのコードが含まれています。  
 この機能はサーバサイドでログイン確認を行うために存在します。  
 Lamba@Edgeでは適切な設定により、Cognito AccessTokenがeventオブジェクト等から取得できるようです。  
 
