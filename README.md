@@ -27,7 +27,7 @@ node.js Express&pug を使っていますがjavascriptはすべてクライン�
 * js/CognitoClientRedirecter.js
 
 ```
-this.config
+this.config = {}
 ```
 
 * js/CustomValidator.js
