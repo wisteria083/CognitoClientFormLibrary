@@ -1,10 +1,10 @@
 (function(global) {
     "use strict;"
 
-    var Region = "ap-northeast-1";
-    var UserPoolId = 'ap-northeast-1_fn27jfafw';
-    var ClientId = '6ppd75cn45a32laiiub2i4bgi4';
-    var IdentityPoolId = 'ap-northeast-1:ffddb598-e8ab-4215-a9ee-b9a36d568744';
+    var Region = "";
+    var UserPoolId = '';
+    var ClientId = '';
+    var IdentityPoolId = '';
 
     var allowRedirectUrlPatterns = [
         "^/.+",
