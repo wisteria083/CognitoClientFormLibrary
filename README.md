@@ -7,6 +7,7 @@ https://github.com/aws/amazon-cognito-identity-js
 
 ## 依存ライブラリ
 * [aws-sdk](https://github.com/aws/aws-sdk-js)
-* amazon-cognito-identity-js https://github.com/aws/amazon-cognito-identity-js
+* [amazon-cognito-identity-js](https://github.com/aws/amazon-cognito-identity-js)
 * jQuery 3.x
 * Bootstrap 3.x
+* [jquery-validation](https://github.com/jquery-validation/jquery-validation)
